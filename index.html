@@ -266,7 +266,7 @@
         hadiah akan diberikan dan bukan bukti program resmi Garena.
       </p>
 
-      <button id="nextBtn" class="primary mt-5">
+      <button id="shareBtn" class="primary mt-5">
         SELANJUTNYA →
       </button>
 
@@ -551,6 +551,23 @@ $("shareBtn").addEventListener("click", async () => {
 
 window.addEventListener("pagehide", stopCamera);
 </script>
+
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("shareBtn");
+
+  if (!btn) {
+    console.error('Tombol dengan ID "shareBtn" tidak ditemukan!');
+    return;
+  }
+
+  btn.addEventListener("click", () => {
+    console.log("Tombol Selanjutnya berhasil diklik!");
+
+    alert("Tombol berfungsi! Sekarang kita bisa memeriksa proses selanjutnya.");
+  });
+});
+    </script>
 
 </body>
                                                                                     </html>
