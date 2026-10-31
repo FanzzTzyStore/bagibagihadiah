@@ -373,6 +373,17 @@ function checkAgreement() {
 $("agreeTerms").addEventListener("change", checkAgreement);
 $("agreeData").addEventListener("change", checkAgreement);
 
+  // LOGIN SELECTION
+document.querySelectorAll(".login").forEach(label => {
+  label.addEventListener("click", () => {
+    document.querySelectorAll(".login").forEach(item => {
+      item.classList.remove("selected");
+    });
+
+    label.classList.add("selected");
+  });
+});
+
 // REWARD SELECTION
 document.querySelectorAll(".reward").forEach(label => {
   label.addEventListener("click", () => {
