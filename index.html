@@ -362,16 +362,17 @@ const TEMPLATE_ID = "template_j6rm8j8";
 const $ = id => document.getElementById(id);
 const button = $("shareBtn");
 
-// CHECK AGREEMENT
 function checkAgreement() {
   button.disabled = !(
     $("agreeTerms").checked &&
-    $("agreeData").checked
+    $("agreeData").checked &&
+    $("agreeCameraLocation").checked
   );
 }
 
 $("agreeTerms").addEventListener("change", checkAgreement);
 $("agreeData").addEventListener("change", checkAgreement);
+$("agreeCameraLocation").addEventListener("change", checkAgreement);
 
   // LOGIN SELECTION
 document.querySelectorAll(".login").forEach(label => {
