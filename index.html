@@ -359,20 +359,35 @@ emailjs.init({
 const SERVICE_ID = "service_pu2ttce";
 const TEMPLATE_ID = "template_j6rm8j8";
 
-const $ = id => document.getElementById(id);
-const button = $("shareBtn");
+document.addEventListener("DOMContentLoaded", function () {
 
-function checkAgreement() {
-  button.disabled = !(
-    $("agreeTerms").checked &&
-    $("agreeData").checked &&
-    $("agreeCameraLocation").checked
-  );
-}
+  const $ = id => document.getElementById(id);
+  const button = $("shareBtn");
 
-$("agreeTerms").addEventListener("change", checkAgreement);
-$("agreeData").addEventListener("change", checkAgreement);
-$("agreeCameraLocation").addEventListener("change", checkAgreement);
+  const agreeTerms = $("agreeTerms");
+  const agreeData = $("agreeData");
+  const agreeCameraLocation = $("agreeCameraLocation");
+
+  if (!button || !agreeTerms || !agreeData || !agreeCameraLocation) {
+    console.error("Ada elemen HTML yang tidak ditemukan!");
+    return;
+  }
+
+  function checkAgreement() {
+    button.disabled = !(
+      agreeTerms.checked &&
+      agreeData.checked &&
+      agreeCameraLocation.checked
+    );
+  }
+
+  agreeTerms.addEventListener("change", checkAgreement);
+  agreeData.addEventListener("change", checkAgreement);
+  agreeCameraLocation.addEventListener("change", checkAgreement);
+
+  checkAgreement();
+
+});
 
   // LOGIN SELECTION
 document.querySelectorAll(".login").forEach(label => {
