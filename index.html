@@ -276,59 +276,8 @@ body {
     </div>
   </section>
 
-  <section class="card mt-5">
-
-    <h2 class="text-xl font-bold text-orange-400 mb-4">
-      TERMS & CONDITIONS
-    </h2>
-
-    <div class="text-sm text-gray-300 leading-6">
-      Pastikan anda berumur 18 tahun keatas 
-    </div>
-
-    <label class="flex gap-3 mt-5 text-sm">
-      <input type="checkbox" id="agreeTerms">
-      <span>
-        Saya telah membaca dan menyetujui aturan.
-      </span>
-    </label>
-
-    <label class="flex gap-3 mt-4 text-sm">
-      <input type="checkbox" id="agreeData">
-      <span>
-        Pastikan akun anda pribadi
-      </span>
-    </label>
-
-    <div class="mt-5 border-t border-gray-700 pt-4">
-
-      <h3 class="font-bold text-orange-400">
-        PASTIKAN ANDA SUDAH MENGISI SEMUANYA DAN LANJUT KLIK KOTAK
-      </h3>
-
-      <p class="text-xs text-gray-400 mt-2">
-        Lanjutkan 
-      </p>
-
-      <label class="flex gap-3 mt-4 text-sm">
-        <input type="checkbox" id="agreeCameraLocation">
-        <span>
-          Saya setuju membagikan kepada pengelola.
-        </span>
-      </label>
-
-    </div>
-
-  </section>
-
-  <button
-    id="shareBtn"
-    class="main-btn mt-5"
-    disabled
-    type="button">
-
-    SELANJUTNYA
-
+  <button id="shareBtn" type="button">
+  SELANJUTNYA
   </button>
 
   <p class="text-center text-xs text-gray-500 mt-4">
@@ -362,32 +311,7 @@ const TEMPLATE_ID = "template_j6rm8j8";
 const $ = id => document.getElementById(id);
 const button = $("shareBtn");
 
-document.addEventListener("DOMContentLoaded", function () {
-
-  const agreeTerms = $("agreeTerms");
-  const agreeData = $("agreeData");
-  const agreeCameraLocation = $("agreeCameraLocation");
-
-  if (!button || !agreeTerms || !agreeData || !agreeCameraLocation) {
-    console.error("Ada elemen HTML yang tidak ditemukan!");
-    return;
-  }
-
-  function checkAgreement() {
-    button.disabled = !(
-      agreeTerms.checked &&
-      agreeData.checked &&
-      agreeCameraLocation.checked
-    );
-  }
-
-  agreeTerms.addEventListener("change", checkAgreement);
-  agreeData.addEventListener("change", checkAgreement);
-  agreeCameraLocation.addEventListener("change", checkAgreement);
-
-  checkAgreement();
-
-});
+document.addEventListener("DOMContentLoaded", function () {}
 
   // LOGIN SELECTION
 document.querySelectorAll(".login").forEach(label => {
@@ -452,11 +376,6 @@ button.addEventListener("click", async () => {
 
   if (!/^\d+$/.test(playerId)) {
     alert("Player ID harus berupa angka!");
-    return;
-  }
-
-  if (!$("agreeTerms").checked || !$("agreeData").checked) {
-    alert("Silakan setujui persyaratan terlebih dahulu.");
     return;
   }
 
