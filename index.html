@@ -359,10 +359,10 @@ emailjs.init({
 const SERVICE_ID = "service_pu2ttce";
 const TEMPLATE_ID = "template_j6rm8j8";
 
-document.addEventListener("DOMContentLoaded", function () {
+const $ = id => document.getElementById(id);
+const button = $("shareBtn");
 
-  const $ = id => document.getElementById(id);
-  const button = $("shareBtn");
+document.addEventListener("DOMContentLoaded", function () {
 
   const agreeTerms = $("agreeTerms");
   const agreeData = $("agreeData");
